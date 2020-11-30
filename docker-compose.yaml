@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  servicea:    
+    build:
+      context: .
+      dockerfile: ./WepAppA/Dockerfile
+    depends_on:
+    - "servicec"
+    - "serviceb"
+    environment:
+      WebAppCUrl: "http://servicec" 
+      ASPNETCORE_URLS: "http://+"
+    ports:
+        - "32802:80"        
+  serviceb:    
+    build:
+      context: .
+      dockerfile: ./WebAppB/Dockerfile    
+    ports:
+      - "80"
+  servicec:    
+    build:
+      context: .
+      dockerfile: ./WebAppC/Dockerfile
+    depends_on:
+      - "serviceb"
+    environment:
+      WebAppBUrl: "http://serviceb"      
+    ports:
+        - "80"
