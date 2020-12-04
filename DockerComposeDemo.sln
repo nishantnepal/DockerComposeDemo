@@ -3,22 +3,32 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WepAppA", "WepAppA\WepAppA.csproj", "{7EF8A964-99ED-487F-95C9-45B8FA0C66A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WepAppA", "WepAppA\WepAppA.csproj", "{7EF8A964-99ED-487F-95C9-45B8FA0C66A6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppA", "AppA", "{DE17B091-5853-4A36-894C-12D2EF3D782F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppB", "AppB", "{E9DC94B3-6AA2-4BFD-B0C1-65F45A0056A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppB", "WebAppB\WebAppB.csproj", "{694E5146-DB55-474D-9C0B-06C89A497A87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppB", "WebAppB\WebAppB.csproj", "{694E5146-DB55-474D-9C0B-06C89A497A87}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppC", "AppC", "{DF003638-38BE-466D-8D9A-D5D5DE3960EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppC", "WebAppC\WebAppC.csproj", "{38000AC1-2292-4C86-ADA8-E0FFDAD4564E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppC", "WebAppC\WebAppC.csproj", "{38000AC1-2292-4C86-ADA8-E0FFDAD4564E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerCompose", "DockerCompose", "{52BC0493-DCC8-48E5-A7A2-590341A6B8D2}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.override.yml = docker-compose.override.yml
 		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "K8s", "K8s", "{F6ED2F40-EF69-4238-9BA0-AE42D6298037}"
+	ProjectSection(SolutionItems) = preProject
+		k8sdeployment.yaml = k8sdeployment.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AA83126A-74DF-41A4-9F17-6A2450DF4D72}"
+	ProjectSection(SolutionItems) = preProject
+		dockerBuildPush.ps1 = dockerBuildPush.ps1
 	EndProjectSection
 EndProject
 Global
