@@ -13,12 +13,14 @@ services:
       ASPNETCORE_URLS: "http://+"
     ports:
         - "32802:80"        
+        - "32805:443"
   serviceb:    
     build:
       context: .
       dockerfile: ./WebAppB/Dockerfile    
     ports:
-      - "80"
+      - "32803:80"
+      - "32806:443"
   servicec:    
     build:
       context: .
@@ -28,4 +30,5 @@ services:
     environment:
       WebAppBUrl: "http://serviceb"      
     ports:
-        - "80"
+        - "32804:80"
+        - "32807:443"

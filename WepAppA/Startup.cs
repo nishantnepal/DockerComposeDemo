@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -46,7 +48,7 @@ namespace WepAppA
             }
 
             app.UsePathBase("/a");
-           app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -55,7 +57,14 @@ namespace WepAppA
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGet("/", async context =>
+                {
+                    context.Response.Redirect("weatherforecast");
+                    //await context.Response.WriteAsync("Pong");
+                }).WithMetadata(new AllowAnonymousAttribute());
             });
+
+
         }
     }
 }

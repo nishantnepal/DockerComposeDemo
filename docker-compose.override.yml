@@ -1,29 +1,25 @@
 version: '3.4'
 
-services:  
-  servicec:        
-    environment:
-      WebAppBUrl: "https://host.docker.internal:32853"    
-      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/docker_localhost.pfx
-      ASPNETCORE_Kestrel__Certificates__Default__Password: password
-      ASPNETCORE_URLS: "https://+;http://+"
-      ASPNETCORE_HTTPS_PORT: 32807  
-    volumes:
-      - "C:\\Users\\nishant.nepal\\.aspnet\\https:/https/"
-    ports:
-        - "32807:443"
+# services:  
+#   # servicec:        
+#   #   environment:
+#   #     WebAppBUrl: "http://serviceb"    
+#   #     ASPNETCORE_Kestrel__Certificates__Default__Path: /https/docker_localhost.pfx
+#   #     ASPNETCORE_Kestrel__Certificates__Default__Password: password
+#   #     ASPNETCORE_URLS: "https://+;http://+"
+#   #     ASPNETCORE_HTTPS_PORT: 32807  
+#   #   volumes:
+#   #     - "C:\\Users\\nishant.nepal\\.aspnet\\https:/https/"    
  
-  servicea:    
-    environment:
-      WebAppCUrl: "http://servicec" 
-      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/docker_localhost.pfx
-      ASPNETCORE_Kestrel__Certificates__Default__Password: password
-      ASPNETCORE_URLS: "https://+;http://+"
-      ASPNETCORE_HTTPS_PORT: 32803
-    volumes:
-      - "C:\\Users\\nishant.nepal\\.aspnet\\https:/https/"
-    ports:
-        - "32803:443"
+#   servicea:    
+#     environment:
+#       WebAppCUrl: "http://servicec" 
+#       ASPNETCORE_Kestrel__Certificates__Default__Path: /https/docker_localhost.pfx
+#       ASPNETCORE_Kestrel__Certificates__Default__Password: password
+#       ASPNETCORE_URLS: "https://+;http://+"
+#       ASPNETCORE_HTTPS_PORT: 32805
+#     volumes:
+#       - "C:\\Users\\nishant.nepal\\.aspnet\\https:/https/"    
 
 # https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-5.0
 # dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\aspnetapp.pfx -p password

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -60,6 +61,11 @@ namespace WebAppC
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapGet("/", async context =>
+            {
+                context.Response.Redirect("weatherforecast");
+                //await context.Response.WriteAsync("Pong");
+            }).WithMetadata(new AllowAnonymousAttribute());
         });
     }
 }
