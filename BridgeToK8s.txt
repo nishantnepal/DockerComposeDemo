@@ -1,0 +1,8 @@
+add to properties/launchsettings if bridge fails to populate
+
+ "Bridge to Kubernetes": {
+      "commandName": "AzureDevSpacesLocal",
+      "resourceGroup": "rg-aks-2377",
+      "aksName": "aks-2377",
+      "subscriptionId": "f0d799b7-4e7b-4f4a-94fd-0e7aa6be8917"
+    }
