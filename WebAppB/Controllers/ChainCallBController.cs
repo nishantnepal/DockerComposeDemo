@@ -42,7 +42,7 @@ namespace WebAppB.Controllers
 
         public async Task<IActionResult> ChainCall(string name)
         {
-            var url = $"{_configuration["WebAppBUrl"]}/weatherforecast/chaincall?name={name}";
+            var url = $"{_configuration["WebAppCUrl"]}/chaincallc/chaincall?name={name}";
             var client = _clientFactory.CreateClient("default");
             var productResponse = await client.GetAsync(url);
             var reponseBody = await productResponse.Content.ReadAsStringAsync();
