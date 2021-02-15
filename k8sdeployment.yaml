@@ -26,8 +26,8 @@ spec:
         ports:
         - containerPort: 80  
         env:
-          - name: WebAppCUrl
-            value: "http://demosvc-c"                                
+          - name: WebAppBUrl
+            value: "http://demosvc-b"                                
             
 ---
 apiVersion: v1
@@ -69,7 +69,10 @@ spec:
             memory: "500Mi"
             cpu: "250m"
         ports:
-        - containerPort: 80                                  
+        - containerPort: 80    
+        env:
+        - name: WebAppBUrl
+          value: "http://demosvc-c"  
 
 ---
 apiVersion: v1
@@ -112,9 +115,6 @@ spec:
             cpu: "250m"
         ports:
         - containerPort: 80       
-        env:
-          - name: WebAppBUrl
-            value: "http://demosvc-b"                            
 
 ---
 apiVersion: v1
@@ -128,65 +128,3 @@ spec:
       targetPort: 80
     selector:
         app: demosvc-c
----            
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: demosvc-c
-  #namespace: ingress-basic
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-spec:
-  rules:
-    - host: "demosvc-c.<public-ip>.nip.io"
-      http:
-       paths:              
-        - path: /(.*)
-          backend:
-            serviceName: demosvc-c
-            servicePort: 80
-          
-
----            
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: demosvc-b
-  #namespace: ingress-basic
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-spec:
-  rules:
-    - host: "demosvc-b.<public-ip>.nip.io"
-      http:
-       paths:              
-        - path: /(.*)
-          backend:
-            serviceName: demosvc-b
-            servicePort: 80
----            
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: demosvc-a
-  #namespace: ingress-basic
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
-spec:
-  rules:
-    - host: "demosvc-a.<public-ip>.nip.io"
-      http:
-       paths:              
-        - path: /(.*)
-          backend:
-            serviceName: demosvc-a
-            servicePort: 80            

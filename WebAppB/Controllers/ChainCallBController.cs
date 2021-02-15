@@ -12,19 +12,19 @@ namespace WebAppB.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class ChainCallBController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<ChainCallBController> _logger;
         private readonly IConfiguration _configuration;
         private readonly System.Net.Http.IHttpClientFactory _clientFactory;
 
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpClientFactory clientFactory, IConfiguration configuration)
+        public ChainCallBController(ILogger<ChainCallBController> logger, IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
@@ -40,10 +40,14 @@ namespace WebAppB.Controllers
 
         [HttpGet("ChainCall")]
 
-        public IActionResult ChainCall(string name)
+        public async Task<IActionResult> ChainCall(string name)
         {
-            var responseBody = $"Hello {name} from App B being called at {Request.GetDisplayUrl()}";
-            return Ok(responseBody);
+            var url = $"{_configuration["WebAppBUrl"]}/weatherforecast/chaincall?name={name}";
+            var client = _clientFactory.CreateClient("default");
+            var productResponse = await client.GetAsync(url);
+            var reponseBody = await productResponse.Content.ReadAsStringAsync();
+            return Ok(reponseBody);
+
         }
     }
 }

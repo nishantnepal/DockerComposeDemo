@@ -1,34 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace WepAppA.Controllers
+namespace WebAppC.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class ChainCallCController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<ChainCallCController> _logger;
         private readonly IConfiguration _configuration;
         private readonly System.Net.Http.IHttpClientFactory _clientFactory;
+        private HttpClient _client;
 
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpClientFactory clientFactory, IConfiguration configuration)
+        public ChainCallCController(ILogger<ChainCallCController> logger, IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
             _clientFactory = clientFactory;
+            //_client = client;
         }
 
         [HttpGet]
@@ -40,13 +42,10 @@ namespace WepAppA.Controllers
 
         [HttpGet("ChainCall")]
 
-        public async Task<IActionResult> ChainCall(string name)
+        public IActionResult ChainCall(string name)
         {
-            var url = $"{_configuration["WebAppCUrl"]}/weatherforecast/chaincall?name={name}";
-            var client = _clientFactory.CreateClient("default");
-            var productResponse = await client.GetAsync(url);
-            var reponseBody = await productResponse.Content.ReadAsStringAsync();
-            return Ok(reponseBody);
+            var responseBody = $"Hello {name} from App C being called at {Request.GetDisplayUrl()}";
+            return Ok(responseBody);
         }
     }
 }
