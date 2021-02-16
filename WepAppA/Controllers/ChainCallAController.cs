@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -37,9 +38,11 @@ namespace WepAppA.Controllers
 
         public async Task<IActionResult> ChainCall(string name)
         {
+            //https://github.com/microsoft/mindaro/blob/6f0be147079afd923df1f0268bdcc4e24a0a8eec/samples/BikeSharingApp/Gateway/HttpHelper.cs#L21
             var url = $"{_configuration["WebAppBUrl"]}/chaincallb/chaincall?name={name}";
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, url).AddOutboundHeaders(Request);
             var client = _clientFactory.CreateClient("default");
-            var productResponse = await client.GetAsync(url);
+            var productResponse = await client.SendAsync(message);
             var reponseBody = await productResponse.Content.ReadAsStringAsync();
             return Ok(reponseBody);
         }

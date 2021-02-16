@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Helpers;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,11 +15,6 @@ namespace WebAppB.Controllers
     [Route("[controller]")]
     public class ChainCallBController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<ChainCallBController> _logger;
         private readonly IConfiguration _configuration;
         private readonly System.Net.Http.IHttpClientFactory _clientFactory;
@@ -40,11 +36,17 @@ namespace WebAppB.Controllers
 
         [HttpGet("ChainCall")]
 
-        public async Task<IActionResult> ChainCall(string name)
+        public async Task<IActionResult> ChainCall(string name, bool propagate = false)
         {
+            if (!propagate)
+            {
+                return Ok($"Hello {name} from App B being called at {Request.GetDisplayUrl()}");
+            }
+            
             var url = $"{_configuration["WebAppCUrl"]}/chaincallc/chaincall?name={name}";
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, url).AddOutboundHeaders(Request);
             var client = _clientFactory.CreateClient("default");
-            var productResponse = await client.GetAsync(url);
+            var productResponse = await client.SendAsync(message);
             var reponseBody = await productResponse.Content.ReadAsStringAsync();
             return Ok(reponseBody);
 
