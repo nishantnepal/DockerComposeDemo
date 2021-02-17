@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Helpers;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -36,16 +37,17 @@ namespace WebAppC.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var responseBody = $"Ok. Append this to the url to call the chaincall method - chaincall?name=john";
+            var responseBody = $"Ok. Append this to the url to call the chaincall method - /chaincall";
             return Ok(responseBody);
         }
 
         [HttpGet("ChainCall")]
 
-        public IActionResult ChainCall(string name)
+        public async Task<IActionResult> ChainCall(int? delayInSeconds)
         {
-            var responseBody = $"Hello {name} from App C being called at {Request.GetDisplayUrl()}";
-            return Ok(responseBody);
+            List<ResponseModel> models = new List<ResponseModel> {new ResponseModel("Service C", " Received request")};
+            await Task.Delay(delayInSeconds.GetValueOrDefault(0) * 1000);
+            return Ok(models);
         }
     }
 }

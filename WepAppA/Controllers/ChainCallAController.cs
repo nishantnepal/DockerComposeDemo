@@ -8,6 +8,7 @@ using Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace WepAppA.Controllers
 {
@@ -36,15 +37,26 @@ namespace WepAppA.Controllers
 
         [HttpGet("ChainCall")]
 
-        public async Task<IActionResult> ChainCall(string name)
+        public async Task<IActionResult> ChainCall(int? delayInSeconds, bool propagate = false, bool forwardHeaders = true)
         {
             //https://github.com/microsoft/mindaro/blob/6f0be147079afd923df1f0268bdcc4e24a0a8eec/samples/BikeSharingApp/Gateway/HttpHelper.cs#L21
-            var url = $"{_configuration["WebAppBUrl"]}/chaincallb/chaincall?name={name}";
-            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, url).AddOutboundHeaders(Request);
+            var url = $"{_configuration["WebAppBUrl"]}/chaincallb/chaincall?delayInSeconds={delayInSeconds.GetValueOrDefault(0)}&propagate={propagate}";
+            List<ResponseModel> models = new List<ResponseModel>();
+            models.Add(new ResponseModel("Service A", "Received request"));
+            models.Add(new ResponseModel("Service A", " Forwarding request to Service B."));
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, url);
+            if (forwardHeaders)
+            {
+                message = message.AddOutboundHeaders(Request);
+            }
             var client = _clientFactory.CreateClient("default");
             var productResponse = await client.SendAsync(message);
-            var reponseBody = await productResponse.Content.ReadAsStringAsync();
-            return Ok(reponseBody);
+            var responseBody = await productResponse.Content.ReadAsStringAsync();
+            var responses = JsonConvert.DeserializeObject<List<ResponseModel>>(responseBody);
+            models.AddRange(responses);
+            models.Add(new ResponseModel("Service B", " Received response from Service B."));
+            return Ok(models);
+
         }
     }
 }

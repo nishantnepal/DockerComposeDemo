@@ -1,0 +1,2 @@
+GET http://btkdemo.gtz.com/api/demosvc-a/chainCallA/chaincall?name=john
+kubernetes-route-as: nishantn-d067

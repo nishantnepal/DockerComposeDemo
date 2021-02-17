@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/backend-path-prefix: /
+    appgw.ingress.kubernetes.io/request-timeout: "120"  
+    #appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
+  name: demosvc-a-ingress
+spec:  
+  rules:
+  - host: btkdemo.gtz.com
+    http:
+      paths:      
+      - backend:
+          serviceName: demosvc-a 
+          servicePort: 80
+        path: /api/demosvc-a/*
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/backend-path-prefix: /
+    appgw.ingress.kubernetes.io/request-timeout: "120"  
+    #appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
+  name: demosvc-b-ingress
+spec:  
+  rules:
+  - host: btkdemo.gtz.com
+    http:
+      paths:      
+      - backend:
+          #has to match name of service created in the microservice k8s manifest
+          serviceName: demosvc-b 
+          servicePort: 80
+        path: /api/demosvc-b/*
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/backend-path-prefix: /
+    appgw.ingress.kubernetes.io/request-timeout: "120"  
+    #appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
+  name: demosvc-c-ingress
+spec:  
+  rules:
+  - host: btkdemo.gtz.com
+    http:
+      paths:      
+      - backend:
+          #has to match name of service created in the microservice k8s manifest
+          serviceName: demosvc-c 
+          servicePort: 80
+        path: /api/demosvc-c/*     

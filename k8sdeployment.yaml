@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: demosvc-a
-        image: nishantnepal/demosvc-a:v1
+        image: nishantnepal/k8s-svc-a
         imagePullPolicy: Always
         resources:
           requests:
@@ -27,7 +27,23 @@ spec:
         - containerPort: 80  
         env:
           - name: WebAppBUrl
-            value: "http://demosvc-b"                                
+            value: "http://demosvc-b"  
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
             
 ---
 apiVersion: v1
@@ -59,7 +75,7 @@ spec:
     spec:
       containers:
       - name: demosvc-b
-        image: nishantnepal/demosvc-b:v1
+        image: nishantnepal/k8s-svc-b
         imagePullPolicy: Always
         resources:
           requests:
@@ -73,6 +89,22 @@ spec:
         env:
         - name: WebAppBUrl
           value: "http://demosvc-c"  
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
 
 ---
 apiVersion: v1
@@ -104,7 +136,7 @@ spec:
     spec:
       containers:
       - name: demosvc-c
-        image: nishantnepal/demosvc-c:v1
+        image: nishantnepal/k8s-svc-c
         imagePullPolicy: Always
         resources:
           requests:
@@ -114,7 +146,24 @@ spec:
             memory: "500Mi"
             cpu: "250m"
         ports:
-        - containerPort: 80       
+        - containerPort: 80    
+        env:
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP   
 
 ---
 apiVersion: v1

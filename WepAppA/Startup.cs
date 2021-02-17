@@ -59,7 +59,7 @@ namespace WepAppA
                 endpoints.MapControllers();
                 endpoints.MapGet("/", async context =>
                 {
-                    context.Response.Redirect("weatherforecast");
+                    context.Response.Redirect("chaincalla");
                     //await context.Response.WriteAsync("Pong");
                 }).WithMetadata(new AllowAnonymousAttribute());
             });

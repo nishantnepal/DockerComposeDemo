@@ -17,5 +17,11 @@ namespace Helpers
         public const string RequestIdHeaderName = "x-contoso-request-id";
 
         public const string KubernetesRouteAsHeaderName = "kubernetes-route-as";
+
+        public const string ENV_MY_NODE_NAME = "MY_NODE_NAME";
+        public const string ENV_MY_POD_NAMESPACE = "MY_POD_NAMESPACE";
+        public const string ENV_MY_POD_IP = "MY_POD_IP";
+        public const string ENV_MY_POD_NAME = "MY_POD_NAME";
+
     }
 }

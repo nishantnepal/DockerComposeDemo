@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerCompose", "DockerComp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "K8s", "K8s", "{F6ED2F40-EF69-4238-9BA0-AE42D6298037}"
 	ProjectSection(SolutionItems) = preProject
+		k8s_ingress_agic.yaml = k8s_ingress_agic.yaml
 		k8s_nginxIngress.yaml = k8s_nginxIngress.yaml
 		k8sdeployment.yaml = k8sdeployment.yaml
 	EndProjectSection
