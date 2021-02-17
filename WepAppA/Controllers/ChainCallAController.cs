@@ -54,7 +54,7 @@ namespace WepAppA.Controllers
             var responseBody = await productResponse.Content.ReadAsStringAsync();
             var responses = JsonConvert.DeserializeObject<List<ResponseModel>>(responseBody);
             models.AddRange(responses);
-            models.Add(new ResponseModel("Service B", " Received response from Service B."));
+            models.Add(new ResponseModel("Service A", " Received response from Service B."));
             return Ok(models);
 
         }

@@ -7,11 +7,11 @@ namespace Helpers
     public class ResponseModel
     {
         public string ServiceName { get; set; }
-        public string NodeName { get; }
-        public string PodName { get;  }
-        public string PodNamespace { get; }
-        public string PodIp { get;  }
-        public DateTime DateTimeUtc { get; }
+        public string NodeName { get; set; }
+        public string PodName { get; set; }
+        public string PodNamespace { get; set; }
+        public string PodIp { get; set; }
+        public DateTime DateTimeUtc { get; set; }
         public string LogText { get; set; }
 
         public ResponseModel(string serviceName,string logText)

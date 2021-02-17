@@ -1,2 +1,2 @@
-GET http://btkdemo.gtz.com/api/demosvc-a/chainCallA/chaincall?name=john
+GET http://btkdemo.gtz.com/api/demosvc-a/chainCallA/chaincall?delayInSeconds=1
 kubernetes-route-as: nishantn-d067
