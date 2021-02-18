@@ -1,2 +1,10 @@
-GET http://btkdemo.gtz.com/api/demosvc-a/chainCallA/chaincall?delayInSeconds=1
-kubernetes-route-as: nishantn-d067
+GET https://nishantn-a0ca.btkdemo.globaltranz.com/api/demosvc-a/chainCallA/chaincall?delayInSeconds=1&forwardHeaders=true
+###
+
+GET https://btkdemo.globaltranz.com/api/demosvc-a/chainCallA/chaincall?delayInSeconds=1&forwardHeaders=true
+kubernetes-route-as: nishantn-a0ca
+
+###
+
+
+GET https://btkdemo.globaltranz.com/api/demosvc-b/chainCallb/chaincall?delayInSeconds=1

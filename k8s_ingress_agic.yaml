@@ -5,11 +5,11 @@ metadata:
     kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/backend-path-prefix: /
     appgw.ingress.kubernetes.io/request-timeout: "120"  
-    #appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
+    appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
   name: demosvc-a-ingress
 spec:  
   rules:
-  - host: btkdemo.gtz.com
+  - host: btkdemo.globaltranz.com
     http:
       paths:      
       - backend:
@@ -25,11 +25,11 @@ metadata:
     kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/backend-path-prefix: /
     appgw.ingress.kubernetes.io/request-timeout: "120"  
-    #appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
+    appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
   name: demosvc-b-ingress
 spec:  
   rules:
-  - host: btkdemo.gtz.com
+  - host: btkdemo.globaltranz.com
     http:
       paths:      
       - backend:
@@ -46,11 +46,11 @@ metadata:
     kubernetes.io/ingress.class: azure/application-gateway
     appgw.ingress.kubernetes.io/backend-path-prefix: /
     appgw.ingress.kubernetes.io/request-timeout: "120"  
-    #appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
+    appgw.ingress.kubernetes.io/appgw-ssl-certificate: "wildcard-globaltranz"
   name: demosvc-c-ingress
 spec:  
   rules:
-  - host: btkdemo.gtz.com
+  - host: btkdemo.globaltranz.com
     http:
       paths:      
       - backend:
