@@ -14,14 +14,14 @@ namespace WepAppA.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ChainCallAController : ControllerBase
+    public class ChainCallController : ControllerBase
     {
-        private readonly ILogger<ChainCallAController> _logger;
+        private readonly ILogger<ChainCallController> _logger;
         private readonly IConfiguration _configuration;
         private readonly System.Net.Http.IHttpClientFactory _clientFactory;
 
 
-        public ChainCallAController(ILogger<ChainCallAController> logger, IHttpClientFactory clientFactory, IConfiguration configuration)
+        public ChainCallController(ILogger<ChainCallController> logger, IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
@@ -31,7 +31,7 @@ namespace WepAppA.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var responseBody = $"Ok. Append this to the url to call the chaincall method - chaincall?name=john";
+            var responseBody = $"Working. Chaincall method - chaincall?delayInSeconds=0&propagate=false&forwardHeaders=true";
             return Ok(responseBody);
         }
 
