@@ -21,6 +21,7 @@ namespace WebAppC
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.AddEnvironmentVariables();
+                    config.AddJsonFile("configs/appsettings.configmaps.json", optional: true);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

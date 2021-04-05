@@ -39,22 +39,33 @@ namespace WepAppA.Controllers
 
         public async Task<IActionResult> ChainCall(int? delayInSeconds, bool propagate = false, bool forwardHeaders = true)
         {
-            //https://github.com/microsoft/mindaro/blob/6f0be147079afd923df1f0268bdcc4e24a0a8eec/samples/BikeSharingApp/Gateway/HttpHelper.cs#L21
             var url = $"{_configuration["WebAppBUrl"]}/chaincallb/chaincall?delayInSeconds={delayInSeconds.GetValueOrDefault(0)}&propagate={propagate}";
             List<ResponseModel> models = new List<ResponseModel>();
             models.Add(new ResponseModel("Service A", "Received request"));
-            models.Add(new ResponseModel("Service A", " Forwarding request to Service B."));
-            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, url);
-            if (forwardHeaders)
+            models.Add(new ResponseModel("Service A", $" Forwarding request to Service B at url {url}."));
+
+            try
             {
-                message = message.AddOutboundHeaders(Request);
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, url);
+                if (forwardHeaders)
+                {
+                    message = message.AddOutboundHeaders(Request);
+                }
+                var client = _clientFactory.CreateClient("default");
+                var productResponse = await client.SendAsync(message);
+                var responseBody = await productResponse.Content.ReadAsStringAsync();
+                var responses = JsonConvert.DeserializeObject<List<ResponseModel>>(responseBody);
+                models.AddRange(responses);
+                models.Add(new ResponseModel("Service A", " Received response from Service B."));
             }
-            var client = _clientFactory.CreateClient("default");
-            var productResponse = await client.SendAsync(message);
-            var responseBody = await productResponse.Content.ReadAsStringAsync();
-            var responses = JsonConvert.DeserializeObject<List<ResponseModel>>(responseBody);
-            models.AddRange(responses);
-            models.Add(new ResponseModel("Service A", " Received response from Service B."));
+            catch (Exception e)
+            {
+                models.Add(new ResponseModel("Service A Error", e.ToString()));
+            }
+            //https://github.com/microsoft/mindaro/blob/6f0be147079afd923df1f0268bdcc4e24a0a8eec/samples/BikeSharingApp/Gateway/HttpHelper.cs#L21
+            
+            
+            
             return Ok(models);
 
         }

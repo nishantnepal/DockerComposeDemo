@@ -32,6 +32,7 @@ namespace aspnetapp.Pages
             if(string.IsNullOrWhiteSpace(AppEnvironment)){
                 AppEnvironment = "n/a";
             }
+
             //var httpRequestFeature = Request.HttpContext.Features.Get<IHttpRequestFeature>();
             //RawRequestUrl = httpRequestFeature.RawTarget;
         }

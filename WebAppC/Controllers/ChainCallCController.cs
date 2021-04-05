@@ -49,5 +49,17 @@ namespace WebAppC.Controllers
             await Task.Delay(delayInSeconds.GetValueOrDefault(0) * 1000);
             return Ok(models);
         }
+
+        [HttpGet("filemountedconfig")]
+
+        public async Task<IActionResult> FileMountedconfig(string configKey)
+        {
+            var configValue = _configuration[configKey];
+            return Ok(new
+            {
+                configKey,
+                configValue
+            });
+        }
     }
 }
