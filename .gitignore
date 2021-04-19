@@ -340,3 +340,7 @@ ASALocalRun/
 # .tfvars files
 *.tfvars
 *.lock.hcl
+
+values-local.yaml
+
+*.tgz

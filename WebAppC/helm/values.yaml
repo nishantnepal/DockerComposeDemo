@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+  repository: nishantnepal/k8s-svc-c
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -37,7 +37,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
 
 ingress:
@@ -77,3 +77,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+secrets:
+  enabled: false
+  mySuperSecretKey: "blah"
+
+canaryDeployment: false

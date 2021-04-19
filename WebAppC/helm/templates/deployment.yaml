@@ -45,6 +45,11 @@ spec:
             httpGet:
               path: /
               port: http
+          envFrom:
+            {{- if .Values.secrets.enabled}}
+              - secretRef: 
+                  name: {{ include "helm.fullname" . }}
+            {{- end }} 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

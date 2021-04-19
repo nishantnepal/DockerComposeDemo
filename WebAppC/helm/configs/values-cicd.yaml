@@ -1,0 +1,36 @@
+replicaCount: 1
+
+autoscaling:
+  enabled: true
+
+image:
+  #will be set from command line to be the build/commit id
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  hosts:
+      # change ip accordingly
+    - host: k8sws-svc-c.20.75.68.97.nip.io
+      paths: 
+       - / 
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 250Mi
+  requests:
+    cpu: 500m
+    memory: 250Mi
+
+secrets:
+  enabled: true
+  mySuperSecretKey: "TBD"

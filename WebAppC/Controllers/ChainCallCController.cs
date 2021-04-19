@@ -37,7 +37,7 @@ namespace WebAppC.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var responseBody = $"Ok. Append this to the url to call the chaincall method - /chaincall";
+            var responseBody = $"{Environment.MachineName}: Append this to the url to call the chaincall method - /chaincall";
             return Ok(responseBody);
         }
 
@@ -53,6 +53,18 @@ namespace WebAppC.Controllers
         [HttpGet("filemountedconfig")]
 
         public async Task<IActionResult> FileMountedconfig(string configKey)
+        {
+            var configValue = _configuration[configKey];
+            return Ok(new
+            {
+                configKey,
+                configValue
+            });
+        }
+
+        [HttpGet("configvalue")]
+
+        public async Task<IActionResult> GetConfigValue(string configKey)
         {
             var configValue = _configuration[configKey];
             return Ok(new

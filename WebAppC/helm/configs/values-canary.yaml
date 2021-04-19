@@ -1,0 +1,25 @@
+replicaCount: 1
+#add this
+canaryDeployment: true
+
+autoscaling:
+  enabled: false
+
+image:
+  #will be set from command line to be the build/commit id
+  tag: "latest"
+
+ingress:
+  enabled: false
+
+# resources:
+#   limits:
+#     cpu: 500m
+#     memory: 250Mi
+#   requests:
+#     cpu: 500m
+#     memory: 250Mi
+
+# secrets:
+#   enabled: true
+#   mySuperSecretKey: "TBD"
