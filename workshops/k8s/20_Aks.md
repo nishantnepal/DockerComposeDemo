@@ -1,6 +1,21 @@
 
-## Ingress versus Load Balancer
+- [Ingress versus Load Balancer](#ingress-versus-load-balancer)
+    - [Demo Load Balancer (NGINX)](#demo-load-balancer-nginx)
+    - [Demo Ingress (NGINX)](#demo-ingress-nginx)
+- [State Persistence](#state-persistence)
+    - [Persistent Volume (PV) and Persistent Volume Claims (PVC)](#persistent-volume-pv-and-persistent-volume-claims-pvc)
+      - [Provisioning](#provisioning)
+- [HPA](#hpa)
+  - [Demo](#demo)
+- [Taints and Tolerations](#taints-and-tolerations)
+  - [Demo](#demo-1)
+- [Node Selectors](#node-selectors)
+- [Affinity and anti-affinity](#affinity-and-anti-affinity)
+    - [Node affinity](#node-affinity)
 
+
+
+## Ingress versus Load Balancer
 A LoadBalancer service is the standard way to expose a service to the internet. On AKS, this will spin up a Network Load Balancer that will give you a single IP address that will forward all traffic to your service.
 
 The big downside is that each service you expose with a LoadBalancer will get its own IP address - that means all your microservices running in your AKS cluster will get its own IP address which translates to its own DNS (because no one calls a service using ip correct?). This can get costly and soon become hard to manage.
@@ -332,3 +347,102 @@ In this demo we will deploy a deployment along with an ingress service and trigg
 
 
 
+## Taints and Tolerations
+Ref https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+
+> Taints and Tolerations are from a node's perspective.
+
+ - Taints allow a node to repel a set of pods.
+ - Tolerations are applied to pods, and allow (but do not require) the pods to schedule onto nodes with matching taints.
+ - Taints and tolerations work together to ensure that pods are not scheduled onto inappropriate nodes. One or more taints are applied to a node; this marks that the node should not accept any pods that do not tolerate the taints
+
+``` kubectl taint nodes node-name key=value:taint-effect ```
+
+```taint-effect```: What happens to Pods that do not tolerate this taint. There are three types of taint-effects. 
+- NoSchedule : Pods will not be scheduled on the nodes
+- PreferNoSchedule: System will try to avoid scheduling pods on the nodes but this is not guaranteed.
+- NoExecute: New Pods will not be scheduled on the pods if they dont have tolerations and existing pods (with no tolerations) will also be evicted. An example here can be when you may want to bring down a node, so you taint it and allow the scheduler to move the pods to another server before bringing the server down. Example - ```kubectl taint nodes aks-agentpool-35064155-vmss000002 patching=value:NoExecute```
+
+### Demo
+
+  ``` bash
+  #create a deployment
+  kubectl apply -f https://gist.githubusercontent.com/nishantnepal/fcae1e0c599f75bdb977f555e54cd918/raw/8039987b3c8a07142f989f06f73b750a81091526/k8sws-core-deployments.yaml
+  #scale the deployment to be the number of nodes
+   kubectl scale deploy k8sws-core-deployments --replicas 3
+  # notice the pods are evenly distributed
+   kubectl get pods -o wide
+  # taint a node
+  
+  #kubectl taint nodes node1 key1=value1:NoSchedule
+  kubectl taint nodes aks-agentpool-35064155-vmss000000 app=critical:NoSchedule
+  # delete the pods
+  kubectl delete pods -l app=k8sws-core-deployments
+  #get pods again - NOTICE that the pods are not scheduled on the tainted node
+  kubectl get pods -o wide
+  #create another deployment - this time with tolerations
+  kubectl apply -f https://gist.githubusercontent.com/nishantnepal/fcae1e0c599f75bdb977f555e54cd918/raw/830f2ae926397079c7ccf0a60497496588f441be/k8sws-core-taint-toleration.yaml
+  #scale 
+  kubectl scale deploy k8sws-core-taint-toleration --replicas 3
+
+  # remove a taint (the "-" at the end)
+  #kubectl taint nodes aks-agentpool-35064155-vmss000000 app=critical:NoSchedule-
+
+  ```
+With the last deployment, we saw that the pods were distributed across the nodes. But what if - we wanted our pods to only run on specific nodes. Taints and Tolerations are fine from a node's perspective i.e i can only take in pods with certain tolerations but what about pods having the same rights - i.e. i want to be scheduled only on certain nodes. I mean, hey you need two to tango right? This is where Node Selectors and Affinity/anti-affinity come into play.
+
+## Node Selectors
+
+```nodeSelector``` provides a very simple way to constrain pods to nodes with particular labels -- **this is important. NodeSelectors are based off labels not taints**
+
+``` bash
+  #create a label for the node
+  kubectl get nodes
+  kubectl label nodes aks-agentpool-35064155-vmss000000 app=critical
+
+  #create a deployment
+  kubectl apply -f https://gist.githubusercontent.com/nishantnepal/fcae1e0c599f75bdb977f555e54cd918/raw/18884092e7206e99514936795c4956579de8c15e/k8sws-core-nodeselector.yaml
+  #scale the deployment to be the number of nodes
+  kubectl scale deploy k8sws-core-nodeselector --replicas 5
+  # notice how the pods are in ONE node only
+  kubectl get pods -o wide
+
+```   
+## Affinity and anti-affinity
+
+Ref https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity
+
+ Key enhancements versus nodeselector
+- The affinity/anti-affinity language is more expressive. The language offers more matching rules besides exact matches created with a logical AND operation;
+- you can indicate that the rule is "soft"/"preference" rather than a hard requirement, so if the scheduler can't satisfy it, the pod will still be scheduled;
+- you can constrain against labels on other pods running on the node (or other topological domain), rather than against labels on the node itself, which allows rules about which pods can and cannot be co-located
+
+#### Node affinity
+similar to nodeSelector -- it allows you to constrain which nodes your pod is eligible to be scheduled on, based on labels on the node
+
+> From K8s Documentation: There are currently two types of node affinity, called requiredDuringSchedulingIgnoredDuringExecution and preferredDuringSchedulingIgnoredDuringExecution. You can think of them as "hard" and "soft" respectively, in the sense that the former specifies rules that must be met for a pod to be scheduled onto a node (similar to nodeSelector but using a more expressive syntax), while the latter specifies preferences that the scheduler will try to enforce but will not guarantee. The "IgnoredDuringExecution" part of the names means that, similar to how nodeSelector works, if labels on a node change at runtime such that the affinity rules on a pod are no longer met, the pod continues to run on the node. In the future we plan to offer requiredDuringSchedulingRequiredDuringExecution which will be identical to requiredDuringSchedulingIgnoredDuringExecution except that it will evict pods from nodes that cease to satisfy the pods' node affinity requirements.
+> Thus an example of requiredDuringSchedulingIgnoredDuringExecution would be "only run the pod on nodes with Intel CPUs" and an example preferredDuringSchedulingIgnoredDuringExecution would be "try to run this set of pods in failure zone XYZ, but if it's not possible, then allow some to run elsewhere".
+
+``` bash
+  #create a label for the node
+  kubectl get nodes
+  kubectl label nodes aks-agentpool-35064155-vmss000000 app=critical
+
+  #create a deployment - requiredDuringSchedulingIgnoredDuringExecution
+  kubectl apply -f https://gist.githubusercontent.com/nishantnepal/fcae1e0c599f75bdb977f555e54cd918/raw/0919e8974c19ec3044c3e4ad5fd0b0cc801a491d/k8sws-core-node-affinity-1.yaml
+  # get pods
+  kubectl get pods -o wide
+   
+  # delete that deployment
+   kubectl delete -f https://gist.githubusercontent.com/nishantnepal/fcae1e0c599f75bdb977f555e54cd918/raw/0919e8974c19ec3044c3e4ad5fd0b0cc801a491d/k8sws-core-node-affinity-1.yaml
+
+  #create another deployment - preferredDuringSchedulingIgnoredDuringExecution
+  # the difference is that it may not match a node and will still be scheduled- check the values
+  kubectl apply -f https://gist.githubusercontent.com/nishantnepal/fcae1e0c599f75bdb977f555e54cd918/raw/8a4c43373650b62c37d46de34faa499d47a777fb/k8sws-core-node-affinity-2.yaml
+
+
+```   
+
+------------------------
+References
+https://blog.nillsf.com/index.php/2020/12/03/how-to-run-your-own-admission-controller-on-kubernetes/
