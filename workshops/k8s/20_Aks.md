@@ -12,6 +12,7 @@
 - [Node Selectors](#node-selectors)
 - [Affinity and anti-affinity](#affinity-and-anti-affinity)
     - [Node affinity](#node-affinity)
+    - [Pod anti-affinity](#pod-anti-affinity)
 
 
 
@@ -442,6 +443,9 @@ similar to nodeSelector -- it allows you to constrain which nodes your pod is el
 
 
 ```   
+
+#### Pod anti-affinity
+Typical example is an ingress controller where you want pods of an ingress controller spread across all nodes/zones instead of being in a single zone.
 
 ------------------------
 References
