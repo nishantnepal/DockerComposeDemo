@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -63,10 +65,66 @@ namespace WepAppA.Controllers
                 models.Add(new ResponseModel("Service A Error", e.ToString()));
             }
             //https://github.com/microsoft/mindaro/blob/6f0be147079afd923df1f0268bdcc4e24a0a8eec/samples/BikeSharingApp/Gateway/HttpHelper.cs#L21
-            
-            
-            
+
+
+
             return Ok(models);
+
+        }
+
+        [HttpGet("DbTables")]
+
+        public async Task<IActionResult> DbTables()
+        {
+            var url = $"{_configuration["WebAppBUrl"]}/chaincallb/dbTables";
+            try
+            {
+                HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, url);
+                message = message.AddOutboundHeaders(Request);
+                var client = _clientFactory.CreateClient("default");
+                var productResponse = await client.SendAsync(message);
+                var responseBody = await productResponse.Content.ReadAsStringAsync();
+                var responses = JsonConvert.DeserializeObject<List<string>>(responseBody);
+                return Ok(responses);
+            }
+            catch (Exception exception)
+            {
+                return Ok($"Error calling '{url}' - {exception}");
+            }
+            //https://github.com/microsoft/mindaro/blob/6f0be147079afd923df1f0268bdcc4e24a0a8eec/samples/BikeSharingApp/Gateway/HttpHelper.cs#L21
+
+
+
+        }
+
+        [HttpGet("WriteReadFile")]
+
+        public async Task<IActionResult> WriteReadFile(bool autoDeleteFile = false)
+        {
+            //APP SERVICE DOES NOT SUPPORT SMB - DOES NOT WORK
+            var directory = _configuration["WriteReadDirectory"];
+            try
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(directory);
+                var fileName = $"{Guid.NewGuid()}.txt";
+                var fullPath = Path.Combine(directory, fileName);
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    await System.IO.File.WriteAllBytesAsync(fullPath, Encoding.UTF8.GetBytes("Hello world"));
+                }
+
+                if (autoDeleteFile)
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+                return Ok($"Success");
+            }
+            catch (Exception exception)
+            {
+                return Ok($"Error - {exception}");
+            }
+
+
 
         }
     }

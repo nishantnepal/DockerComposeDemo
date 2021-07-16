@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Dapper;
 using Helpers;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +58,28 @@ namespace WebAppB.Controllers
             models.AddRange(responses);
             models.Add(new ResponseModel("Service B", " Received response from Service C."));
             return Ok(models);
+
+        }
+
+        [HttpGet("DbTables")]
+        public async Task<ActionResult<List<string>>> DbTables()
+        {
+            var models = new List<string>();
+            var sql = @"select (TABLE_SCHEMA + '.' + TABLE_NAME) as Tables from INFORMATION_SCHEMA.TABLES where TABLE_TYPE = 'BASE TABLE'";
+            try
+            {
+                using (var connection = new SqlConnection(_configuration.GetConnectionString("DBConnection")))
+                {
+                    models = connection.Query<string>(sql).ToList();
+                }
+                models.Sort();
+                return Ok(models);
+            }
+            catch (Exception exception)
+            {
+                return Ok($"Error - {exception}");
+            }
+           
 
         }
     }
